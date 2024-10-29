@@ -4,8 +4,9 @@ import dbdr.domain.careworker.dto.request.CareworkerRequestDTO;
 import dbdr.domain.careworker.dto.response.CareworkerResponseDTO;
 import dbdr.domain.careworker.service.CareworkerService;
 import jakarta.validation.Valid;
+import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class CareworkerController {
 
     @GetMapping
     public ResponseEntity<List<CareworkerResponseDTO>> getAllCareworkers(
-        @RequestParam(value = "institutionId", required = false) Long institutionId) {
+            @RequestParam(value = "institutionId", required = false) Long institutionId) {
         List<CareworkerResponseDTO> careworkerList;
         if (institutionId != null) {
             careworkerList = careworkerService.getCareworkersByInstitution(institutionId);
@@ -44,18 +45,18 @@ public class CareworkerController {
 
     @PostMapping
     public ResponseEntity<CareworkerResponseDTO> createCareworker(
-        @Valid @RequestBody CareworkerRequestDTO careworkerDTO) {
+            @Valid @RequestBody CareworkerRequestDTO careworkerDTO) {
         CareworkerResponseDTO newCareworker = careworkerService.createCareworker(careworkerDTO);
         return ResponseEntity.created(
-                URI.create("/" + appVersion + "/careworker/" + newCareworker.getId()))
-            .body(newCareworker);
+                        URI.create("/" + appVersion + "/careworker/" + newCareworker.getId()))
+                .body(newCareworker);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CareworkerResponseDTO> updateCareworker(@PathVariable("id") Long id,
         @Valid @RequestBody CareworkerRequestDTO careworkerDTO) {
         CareworkerResponseDTO updatedCareworker = careworkerService.updateCareworker(id,
-            careworkerDTO);
+                careworkerDTO);
         return ResponseEntity.ok(updatedCareworker);
     }
 
