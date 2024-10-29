@@ -58,7 +58,7 @@ public class GuardianService {
         return guardianRepository.findById(guardianId)
             .orElseThrow(() -> new ApplicationException(ApplicationError.GUARDIAN_NOT_FOUND));
     }
-
+  
     private void ensureUniquePhone(String phone) {
         if (guardianRepository.existsByPhone(phone)) {
             throw new ApplicationException(ApplicationError.DUPLICATE_PHONE);
