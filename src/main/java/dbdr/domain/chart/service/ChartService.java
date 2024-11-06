@@ -66,8 +66,8 @@ public class ChartService {
     public ChartDetailResponse saveChart(ChartDetailRequest request) {
         Chart chart = chartMapper.toEntity(request);
         Chart savedChart = chartRepository.save(chart);
-        SummaryResponse summaryResponse = getTextAndGetSummary(chart);
-        summaryRepository.save(new Summary(chart.getId(), summaryResponse.cognitiveManagement(),
+        SummaryResponse summaryResponse = getTextAndGetSummary(savedChart);
+        summaryRepository.save(new Summary(savedChart.getId(), summaryResponse.cognitiveManagement(),
             summaryResponse.bodyManagement(), summaryResponse.recoveryTraining(),
             summaryResponse.conditionDisease(), summaryResponse.nursingManagement()));
         return chartMapper.toResponse(savedChart);
@@ -87,7 +87,7 @@ public class ChartService {
     private SummaryResponse getTextAndGetSummary(Chart chart) {
         HttpHeaders headers = summarizationConfig.httpHeaders();
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonString = "";
+        String jsonString;
 
         ChartDataRequest text = getSelectedDatesSummarization(chart);
 

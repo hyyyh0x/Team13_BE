@@ -1,7 +1,5 @@
 package dbdr.domain.careworker.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import dbdr.domain.core.base.entity.BaseEntity;
