@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChartService {
 
     private final ChartRepository chartRepository;
@@ -87,7 +89,7 @@ public class ChartService {
     private SummaryResponse getTextAndGetSummary(Chart chart) {
         HttpHeaders headers = summarizationConfig.httpHeaders();
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonString;
+        String jsonString = "";
 
         ChartDataRequest text = getSelectedDatesSummarization(chart);
 
@@ -103,6 +105,8 @@ public class ChartService {
         ResponseEntity<OpenAiSummaryResponse> response = summarizationConfig.restTemplate()
             .exchange(chatUrl, HttpMethod.POST, new HttpEntity<>(request, headers),
                 OpenAiSummaryResponse.class);
+
+        log.debug("API Response: " + response.getBody());
 
         try {
             return objectMapper.readValue(response.getBody().choices().get(0).message().content(),
