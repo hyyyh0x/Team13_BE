@@ -58,39 +58,37 @@ public class ChartService {
         return chartMapper.toResponse(savedChart);
     }
 
-    public ChartDataRequest getSevenDaysChart(Long recipientId) {
-        List<ChartDetailResponse> chartList = getChartsFromLastSevenDays(recipientId);
+    public ChartDataRequest getSelectedDatesSummarization(Long recipientId, LocalDateTime startDate, LocalDateTime endDate) {
+        List<ChartDetailResponse> chartList = getSelectedDayChart(recipientId, startDate, endDate);
 
         StringBuilder conditionDisease = new StringBuilder();
 
-        String bodyManagement = formatSection("신체활동", chartList,
+        String bodyManagement = formatSection(chartList,
             ChartDetailResponse::bodyManagement);
-        conditionDisease.append("상태: ").append(collectConditionDisease(chartList));
-        String nursingManagement = formatSection("간호관리", chartList,
+        conditionDisease.append(collectConditionDisease(chartList));
+        String nursingManagement = formatSection(chartList,
             ChartDetailResponse::nursingManagement);
-        String recoveryTraining = formatSection("기능회복훈련", chartList,
+        String recoveryTraining = formatSection(chartList,
             ChartDetailResponse::recoveryTraining);
-        String cognitiveManagement = formatSection("인지관리", chartList,
+        String cognitiveManagement = formatSection(chartList,
             ChartDetailResponse::cognitiveManagement);
 
         return new ChartDataRequest(cognitiveManagement, bodyManagement,
             recoveryTraining, conditionDisease.toString(), nursingManagement);
     }
 
-    private List<ChartDetailResponse> getChartsFromLastSevenDays(Long recipientId) {
-        LocalDateTime currentDate = LocalDateTime.now();
-        LocalDateTime sevenDaysAgo = currentDate.minusDays(7);
-        List<Chart> chartList = chartRepository.findAllWithinSevenDaysByRecipientId(recipientId,sevenDaysAgo, currentDate);
+    private List<ChartDetailResponse> getSelectedDayChart(Long recipientId, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Chart> chartList = chartRepository.findByLocalDateTimeAndRecipient(recipientId, startDate, endDate);
         return chartList.stream().map(chartMapper::toResponse).toList();
     }
 
-    private <T> String formatSection(String sectionName, List<ChartDetailResponse> chartList,
+    private <T> String formatSection(List<ChartDetailResponse> chartList,
         Function<ChartDetailResponse, T> mapper) {
         return chartList.stream()
             .map(mapper)
             .filter(Objects::nonNull)
             .map(this::convertToReadableString)
-            .collect(Collectors.joining("; ", sectionName + ": ", ""));
+            .collect(Collectors.joining("; ", "", ""));
     }
 
     private String convertToReadableString(Object obj) {
@@ -98,7 +96,7 @@ public class ChartService {
         try {
             Map<String, Object> map = objectMapper.convertValue(obj, new TypeReference<>() {});
 
-            String createdAt = (String) map.getOrDefault("createdAt", "알 수 없음");
+            String createdAt = (String) map.getOrDefault("createdAt", "unknown");
             String dateLabel = formatDateLabel(createdAt);
 
             return map.entrySet().stream()
@@ -114,7 +112,7 @@ public class ChartService {
             return dateLabel;
         }
         String formattedValue = (value != null) ? value.toString() : "없음";
-        return key + " " + formattedValue;
+        return key + ": " + formattedValue;
     }
 
     private String formatDateLabel(String createdAt) {

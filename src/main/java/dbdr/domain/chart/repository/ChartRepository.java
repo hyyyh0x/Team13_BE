@@ -12,6 +12,6 @@ import org.springframework.data.repository.query.Param;
 public interface ChartRepository extends JpaRepository<Chart, Long> {
     Page<Chart> findAllByRecipientId(Long recipientId, Pageable pageable);
 
-    @Query("SELECT c FROM Chart c WHERE c.recipient.id = :recipientId AND c.createdAt >= :sevenDaysAgo AND c.createdAt <= :currentDate")
-    List<Chart> findAllWithinSevenDaysByRecipientId(@Param("recipientId") Long recipientId, @Param("sevenDaysAgo") LocalDateTime sevenDaysAgo, @Param("currentDate") LocalDateTime currentDate);
+    @Query("SELECT c FROM Chart c WHERE c.recipient.id = :recipientId AND c.createdAt >= :startDate AND c.createdAt <= :endDate")
+    List<Chart> findByLocalDateTimeAndRecipient(@Param("recipientId") Long recipientId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }

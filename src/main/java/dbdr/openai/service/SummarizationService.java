@@ -10,6 +10,7 @@ import dbdr.openai.dto.request.OpenAiSummaryRequest;
 import dbdr.openai.dto.etc.Message;
 import dbdr.openai.dto.response.OpenAiSummaryResponse;
 import dbdr.openai.dto.response.SummaryResponse;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,12 +33,12 @@ public class SummarizationService {
     @Value("${openai.model}")
     private String model;
 
-    public SummaryResponse getTextAndGetSummary(Long recipientId) {
+    public SummaryResponse getTextAndGetSummary(Long recipientId, LocalDateTime startDate, LocalDateTime endDate) {
         HttpHeaders headers = summarizationConfig.httpHeaders();
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = "";
 
-        ChartDataRequest text = chartService.getSevenDaysChart(recipientId);
+        ChartDataRequest text = chartService.getSelectedDatesSummarization(recipientId, startDate, endDate);
 
         try {
             jsonString = objectMapper.writeValueAsString(text);
