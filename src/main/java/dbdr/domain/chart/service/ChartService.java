@@ -49,7 +49,7 @@ public class ChartService {
     private String chatUrl;
 
     @Value("${openai.model}")
-    private String model;
+    private String modelOne;
 
     public Page<ChartDetailResponse> getAllChartByRecipientId(Long recipientId, Pageable pageable) {
         Page<Chart> results = chartRepository.findAllByRecipientId(recipientId, pageable);
@@ -86,8 +86,18 @@ public class ChartService {
         return chartMapper.toResponse(savedChart);
     }
 
-    private SummaryResponse getTextAndGetSummary(Chart chart) {
+    public OpenAiSummaryResponse openAiResponse(String str, String tempModel) {
         HttpHeaders headers = summarizationConfig.httpHeaders();
+        Message userMessage = new Message("user", str);
+        List<Message> messageList = List.of(userMessage);
+        OpenAiSummaryRequest request = new OpenAiSummaryRequest(tempModel, messageList);
+        ResponseEntity<OpenAiSummaryResponse> response = summarizationConfig.restTemplate()
+            .exchange(chatUrl, HttpMethod.POST, new HttpEntity<>(request, headers),
+                OpenAiSummaryResponse.class);
+        return response.getBody();
+    }
+
+    private SummaryResponse getTextAndGetSummary(Chart chart) {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = "";
 
@@ -99,17 +109,12 @@ public class ChartService {
             throw new ApplicationException(ApplicationError.JSON_PARSING_ERROR);
         }
 
-        Message userMessage = new Message("user", jsonString);
-        List<Message> messageList = List.of(userMessage);
-        OpenAiSummaryRequest request = new OpenAiSummaryRequest(model, messageList);
-        ResponseEntity<OpenAiSummaryResponse> response = summarizationConfig.restTemplate()
-            .exchange(chatUrl, HttpMethod.POST, new HttpEntity<>(request, headers),
-                OpenAiSummaryResponse.class);
+        OpenAiSummaryResponse response = openAiResponse(jsonString, modelOne);
 
-        log.debug("API Response: " + response.getBody());
+        log.debug("API Response: " + response);
 
         try {
-            return objectMapper.readValue(response.getBody().choices().get(0).message().content(),
+            return objectMapper.readValue(response.choices().get(0).message().content(),
                 SummaryResponse.class);
         } catch (Exception e) {
             throw new ApplicationException(ApplicationError.JSON_PARSING_ERROR);
