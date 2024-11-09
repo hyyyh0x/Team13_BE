@@ -34,7 +34,7 @@ public class GuardianService {
 
     public GuardianMyPageResponse updateAlertTime(Long guardianId,
         GuardianAlertTimeRequest request) {
-        ensureUniquePhone(request.phone());
+        ensureUniquePhoneButNotId(request.phone(), guardianId);
         Guardian guardian = findGuardianById(guardianId);
         guardian.updateAlertTime(request.name(), request.phone(), request.alertTime());
         guardianRepository.save(guardian);
@@ -47,7 +47,7 @@ public class GuardianService {
             Long guardianId,
             GuardianRequest guardianRequest
     ) {
-        ensureUniquePhone(guardianRequest.phone());
+        ensureUniquePhoneButNotId(guardianRequest.phone(), guardianId);
 
         Guardian guardian = findGuardianById(guardianId);
         guardian.updateGuardian(guardianRequest.phone(), guardianRequest.name());
@@ -91,6 +91,12 @@ public class GuardianService {
 
     private void ensureUniquePhone(String phone) {
         if (guardianRepository.existsByPhone(phone)) {
+            throw new ApplicationException(ApplicationError.DUPLICATE_PHONE);
+        }
+    }
+
+    private void ensureUniquePhoneButNotId(String phone, Long id) {
+        if(guardianRepository.existsByPhoneNotId(phone, id)) {
             throw new ApplicationException(ApplicationError.DUPLICATE_PHONE);
         }
     }
