@@ -31,14 +31,16 @@ public class Institution extends BaseEntity {
     private String institutionName;
 
     @Builder
-    public Institution(String loginId,String loginPassword,Long institutionNumber, String institutionName) {
+    public Institution(String loginId, String loginPassword, Long institutionNumber, String institutionName) {
         this.loginId = loginId;
         this.loginPassword = loginPassword;
         this.institutionNumber = institutionNumber;
         this.institutionName = institutionName;
     }
 
-    public void updateInstitution(Long institutionNumber, String institutionName) {
+    public void updateInstitution(String loginId, String loginPassword, Long institutionNumber, String institutionName) {
+        this.loginId = loginId;
+        this.loginPassword = loginPassword;
         this.institutionNumber = institutionNumber;
         this.institutionName = institutionName;
     }
