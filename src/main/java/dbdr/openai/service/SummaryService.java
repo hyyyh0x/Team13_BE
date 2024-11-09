@@ -1,6 +1,10 @@
 package dbdr.openai.service;
 
-import dbdr.openai.dto.response.SummaryAndTagResponse;
+import dbdr.domain.chart.entity.Chart;
+import dbdr.domain.chart.repository.ChartRepository;
+import dbdr.global.exception.ApplicationError;
+import dbdr.global.exception.ApplicationException;
+import dbdr.openai.dto.response.SummaryApiFinalResponse;
 import dbdr.openai.dto.response.SummaryResponse;
 import dbdr.openai.dto.response.TagResponse;
 import dbdr.openai.entity.Summary;
@@ -13,9 +17,14 @@ import org.springframework.stereotype.Service;
 public class SummaryService {
 
     private final SummaryRepository summaryRepository;
+    private final ChartRepository chartRepository;
 
-    public SummaryAndTagResponse getSummaryAndTag(Long chartId) {
-        return new SummaryAndTagResponse(getSummarization(chartId), getTag(chartId));
+    public SummaryApiFinalResponse getFinalSummary(Long chartId) {
+        Chart chart = chartRepository.findById(chartId).orElseThrow(() -> new ApplicationException(
+            ApplicationError.CHART_NOT_FOUND));
+        String institutionName = chart.getRecipient().getInstitution().getInstitutionName();
+        return new SummaryApiFinalResponse(getSummarization(chartId), getTag(chartId), chart.getUpdatedAt(),
+            institutionName);
     }
 
     private SummaryResponse getSummarization(Long chartId) {
