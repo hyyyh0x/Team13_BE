@@ -11,6 +11,8 @@ import dbdr.global.exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class GuardianService {
 
     private final GuardianRepository guardianRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public GuardianResponse getGuardianById(Long guardianId) {
@@ -68,10 +73,11 @@ public class GuardianService {
     @Transactional
     public GuardianResponse addGuardian(GuardianRequest guardianRequest) {
         ensureUniquePhone(guardianRequest.phone());
+        String password = passwordEncoder.encode(guardianRequest.loginPassword());
         Guardian guardian = Guardian.builder().phone(guardianRequest.phone())
             .name(guardianRequest.name())
             .loginId(guardianRequest.phone())
-            .loginPassword(guardianRequest.loginPassword())
+            .loginPassword(password)
             .build();
         guardian = guardianRepository.save(guardian);
         return new GuardianResponse(guardian.getPhone(), guardian.getName(), guardian.isActive());

@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
 public class CareworkerService {
@@ -65,8 +64,6 @@ public class CareworkerService {
         return careworkers.stream().map(careworkerMapper::toResponse).toList();
     }
 
-
-
     @Transactional
     public CareworkerResponse createCareworker(CareworkerRequest careworkerRequestDTO) {
         ensureUniqueEmail(careworkerRequestDTO.getEmail());
@@ -98,7 +95,6 @@ public class CareworkerService {
         ensureUniqueEmailButNotId(request.getEmail(), careworkerId);
         Careworker careworker = findCareworkerById(careworkerId);
 
-
         Institution institution = institutionService.getInstitutionById(request.getInstitutionId());
         /*if (institution == null) {
             throw new ApplicationException(ApplicationError.INSTITUTION_NOT_FOUND);
@@ -109,8 +105,6 @@ public class CareworkerService {
 
         return careworkerMapper.toResponse(careworker);
     }
-
-
 
     @Transactional
     public void deleteCareworker(Long careworkerId, Long institutionId) {

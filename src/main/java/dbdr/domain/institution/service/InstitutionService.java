@@ -37,8 +37,9 @@ public class InstitutionService {
         ensureUniqueInstitutionNumber(institutionRequest.institutionNumber());
 
         Institution institution = getInstitutionById(institutionId);
+        String password = passwordEncoder.encode(institutionRequest.institutionLoginPassword());
         institution.updateInstitution(institutionRequest.institutionLoginId(),
-                institutionRequest.institutionLoginPassword(), institutionRequest.institutionNumber(),
+                password, institutionRequest.institutionNumber(),
                 institutionRequest.institutionName());
         institutionRepository.save(institution);
         return new InstitutionResponse(institutionRequest.institutionNumber(),
