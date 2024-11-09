@@ -12,7 +12,7 @@ public interface GuardianRepository extends JpaRepository<Guardian, Long> {
 
     boolean existsByPhone(String phone);
 
-    boolean existsByPhoneNotId(String phone, Long id);
+    boolean existsByPhoneAndIdNot(String phone, Long id);
 
     Optional<Guardian> findByLineUserId(String userId);
 

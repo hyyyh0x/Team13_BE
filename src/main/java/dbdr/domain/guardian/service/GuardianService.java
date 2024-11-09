@@ -96,7 +96,7 @@ public class GuardianService {
     }
 
     private void ensureUniquePhoneButNotId(String phone, Long id) {
-        if(guardianRepository.existsByPhoneNotId(phone, id)) {
+        if(guardianRepository.existsByPhoneAndIdNot(phone, id)) {
             throw new ApplicationException(ApplicationError.DUPLICATE_PHONE);
         }
     }
