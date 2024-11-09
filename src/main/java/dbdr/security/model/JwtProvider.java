@@ -1,16 +1,13 @@
-package dbdr.security.service;
+package dbdr.security.model;
 
-import static dbdr.global.exception.ApplicationError.REFRESH_TOKEN_EXPIRED;
-import static dbdr.global.exception.ApplicationError.TOKEN_EXPIRED;
 import static dbdr.global.util.api.JwtUtils.ACCESS_TOKEN_EXPIRATION_TIME;
 import static dbdr.global.util.api.JwtUtils.REFRESH_TOKEN_EXPIRATION_TIME;
 import static dbdr.global.util.api.JwtUtils.TOKEN_PREFIX;
 
-import dbdr.global.exception.ApplicationException;
 import dbdr.global.util.api.JwtUtils;
 import dbdr.security.dto.TokenDTO;
-import dbdr.security.model.BaseUserDetails;
-import dbdr.security.model.Role;
+import dbdr.security.service.BaseUserDetailsService;
+import dbdr.security.service.RedisService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +20,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Component

@@ -1,17 +1,21 @@
 spring:
-    config:
-        import:
-        - optional:database.yml
-        - optional:logging.yml
-        - optional:application-secret.yml
+  config:
+    import:
+      - optional:database.yml
+      - optional:logging.yml
 
-    app:
-      version: v1
+  jwt:
+    secret: c3VwZXItc2VjdXJlLWxvbmdlci1zZWNyZXQta2V5LXVzaW5nLXN0cm9uZy1wYXNzd29yZC1tYW5hZ2VtZW50LXZpYS1iYXNlNjQtZW5jb2RpbmctdG8tcHJvdGVjdC1qd3Rz
+    expiration: 86400000
+    authheader: Authorization
 
-    data:
-      redis:
-        port: 1000
-        host: "host"
+  app:
+    version: v1
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 line:
   bot:
