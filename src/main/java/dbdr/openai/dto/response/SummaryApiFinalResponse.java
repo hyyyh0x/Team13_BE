@@ -1,8 +1,8 @@
 package dbdr.openai.dto.response;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record SummaryApiFinalResponse(SummaryResponse summaryResponse, TagResponse tagResponse,
-                                      LocalDateTime updatedAt, String institutionName) {
+                                      LocalDate updatedAt, String institutionName) {
 
 }

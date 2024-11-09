@@ -9,6 +9,9 @@ import dbdr.openai.dto.response.SummaryResponse;
 import dbdr.openai.dto.response.TagResponse;
 import dbdr.openai.entity.Summary;
 import dbdr.openai.repository.SummaryRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +26,9 @@ public class SummaryService {
         Chart chart = chartRepository.findById(chartId).orElseThrow(() -> new ApplicationException(
             ApplicationError.CHART_NOT_FOUND));
         String institutionName = chart.getRecipient().getInstitution().getInstitutionName();
-        return new SummaryApiFinalResponse(getSummarization(chartId), getTag(chartId), chart.getUpdatedAt(),
+        LocalDateTime dateTime = chart.getUpdatedAt();
+        LocalDate date = dateTime.toLocalDate();
+        return new SummaryApiFinalResponse(getSummarization(chartId), getTag(chartId), date,
             institutionName);
     }
 
