@@ -35,7 +35,7 @@ public class CareworkerAdminController {
     @Operation(summary = "요양보호사 정보 조회", security = @SecurityRequirement(name = "JWT"))
     @GetMapping("/{careworkerId}")
     public ResponseEntity<ApiUtils.ApiResult<CareworkerResponse>> getCareworkerById(
-            @PathVariable Long careworkerId) {
+            @PathVariable("careworkerId") Long careworkerId) {
         CareworkerResponse careworker = careworkerService.getCareworkerResponseById(careworkerId);
         return ResponseEntity.ok(ApiUtils.success(careworker));
     }
@@ -53,7 +53,7 @@ public class CareworkerAdminController {
     @Operation(summary = "요양보호사 정보 수정 ", security = @SecurityRequirement(name = "JWT"))
     @PutMapping("/{careworkerId}")
     public ResponseEntity<ApiUtils.ApiResult<CareworkerResponse>> updateCareworker(
-            @PathVariable Long careworkerId,
+            @PathVariable("careworkerId") Long careworkerId,
             @Valid @RequestBody CareworkerRequest careworkerDTO) {
         CareworkerResponse updatedCareworker = careworkerService.updateCareworkerByAdmin(careworkerId, careworkerDTO);
         return ResponseEntity.ok(ApiUtils.success(updatedCareworker));
@@ -62,7 +62,7 @@ public class CareworkerAdminController {
 
     @Operation(summary = "요양보호사 삭제")
     @DeleteMapping("/{careworkerId}")
-    public ResponseEntity<ApiUtils.ApiResult<String>> deleteCareworker(@PathVariable Long careworkerId) {
+    public ResponseEntity<ApiUtils.ApiResult<String>> deleteCareworker(@PathVariable("careworkerId") Long careworkerId) {
         careworkerService.deleteCareworkerByAdmin(careworkerId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

@@ -18,13 +18,13 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLDelete(sql = "UPDATE institutions SET is_active = false WHERE id = ?")
 @SQLRestriction("is_active = true")
 public class Institution extends BaseEntity {
-    @Column(unique = true)
+
     private String loginId;
 
     @Column(nullable = false)
     private String loginPassword;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private Long institutionNumber;
 
     @Column(nullable = false, length = 100)

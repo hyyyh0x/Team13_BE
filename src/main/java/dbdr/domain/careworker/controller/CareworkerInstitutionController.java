@@ -57,7 +57,7 @@ public class CareworkerInstitutionController {
     @Operation(summary = "요양보호사 정보 수정", security = @SecurityRequirement(name = "JWT"))
     @PutMapping("/{careworkerId}")
     public ResponseEntity<ApiUtils.ApiResult<CareworkerResponse>> updateCareworker(
-            @PathVariable Long careworkerId,
+            @PathVariable("careworkerId") Long careworkerId,
             @LoginInstitution Institution institution,
             @RequestBody CareworkerRequest careworkerDTO) {
         CareworkerResponse updatedCareworker = careworkerService.updateCareworker(careworkerId, careworkerDTO);
@@ -67,7 +67,7 @@ public class CareworkerInstitutionController {
     @Operation(summary = "요양보호사 삭제", security = @SecurityRequirement(name = "JWT"))
     @DeleteMapping("/{careworkerId}")
     public ResponseEntity<ApiUtils.ApiResult<String>> deleteCareworker(
-            @PathVariable Long careworkerId,
+            @PathVariable("careworkerId") Long careworkerId,
             @LoginInstitution Institution institution) {
         careworkerService.deleteCareworker(careworkerId, institution.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

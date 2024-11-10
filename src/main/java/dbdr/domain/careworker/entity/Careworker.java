@@ -54,7 +54,6 @@ public class Careworker extends BaseEntity {
     @Column(nullable = true)
     private LocalTime alertTime;
 
-    @Column(unique = true)
     private String email;
 
 //    @Builder

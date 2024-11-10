@@ -27,12 +27,10 @@ import lombok.NoArgsConstructor;
 @SQLDelete(sql = "UPDATE guardians SET is_active = false WHERE id = ?")
 @SQLRestriction("is_active = true")
 public class Guardian extends BaseEntity {
-    @Column(unique = true)
-    private String loginId;
 
     private String loginPassword;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     @Pattern(regexp = "010\\d{8}")
     private String phone;
 
