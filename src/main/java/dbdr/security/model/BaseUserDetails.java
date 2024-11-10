@@ -70,7 +70,7 @@ public class BaseUserDetails implements UserDetails {
         return role.equals(Role.GUARDIAN);
     }
 
-    public void setInstitutionId(Long instituionId) {
-        this.institutionId = instituionId;
+    public void setInstitutionId(Long institutionId) {
+        this.institutionId = institutionId;
     }
 }

@@ -14,6 +14,7 @@ public record GuardianRequest(
     String name,
     @Schema(description = "보호자의 비밀번호", example = "abcdefg")
     @NotBlank(message = "비밀번호는 필수 항목입니다.")
-    String loginPassword) {
+    String loginPassword,
+    Long institutionId) {
 
 }

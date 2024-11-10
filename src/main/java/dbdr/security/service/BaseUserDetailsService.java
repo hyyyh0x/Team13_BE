@@ -74,9 +74,8 @@ public class BaseUserDetailsService {
         Guardian guardian = guardianRepository.findByPhone(userId)
             .orElseThrow(() -> new ApplicationException(ApplicationError.GUARDIAN_NOT_FOUND));
 
-        return null;
-        //return securityRegister(guardian.getId(), guardian.getPhone(), guardian.getLoginPassword(),
-        //    Role.GUARDIAN, guardian.getRecipient().getInstitution().getId());
+        return securityRegister(guardian.getId(), guardian.getPhone(), guardian.getLoginPassword(),
+            Role.GUARDIAN, guardian.getInstitution().getId());
     }
 
     private BaseUserDetails securityRegister(Long id, String username, String password, Role role) {
@@ -89,9 +88,9 @@ public class BaseUserDetailsService {
         return userDetails;
     }
 
-    private BaseUserDetails securityRegister(Long id,String username, String password,Role role,Long instituionId){
+    private BaseUserDetails securityRegister(Long id,String username, String password,Role role,Long institutionId){
         BaseUserDetails baseUserDetails = securityRegister(id,username,password,role);
-        baseUserDetails.setInstitutionId(instituionId);
+        baseUserDetails.setInstitutionId(institutionId);
         log.info("security register : {}", baseUserDetails.getUserLoginId());
         return baseUserDetails;
     }

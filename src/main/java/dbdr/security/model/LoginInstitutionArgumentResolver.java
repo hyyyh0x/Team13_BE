@@ -1,5 +1,6 @@
 package dbdr.security.model;
 
+import dbdr.domain.institution.entity.Institution;
 import dbdr.domain.institution.repository.InstitutionRepository;
 import dbdr.global.exception.ApplicationError;
 import dbdr.global.exception.ApplicationException;
@@ -7,7 +8,6 @@ import dbdr.security.LoginInstitution;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -23,7 +23,7 @@ public class LoginInstitutionArgumentResolver implements HandlerMethodArgumentRe
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.getParameterAnnotation(LoginInstitution.class) != null &&
-            UserDetails.class.isAssignableFrom(parameter.getParameterType());
+            Institution.class.isAssignableFrom(parameter.getParameterType());
     }
 
     @Override

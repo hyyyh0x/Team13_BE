@@ -27,9 +27,6 @@ import lombok.NoArgsConstructor;
 @SQLDelete(sql = "UPDATE guardians SET is_active = false WHERE id = ?")
 @SQLRestriction("is_active = true")
 public class Guardian extends BaseEntity {
-    @Column(unique = true)
-    private String loginId;
-
     private String loginPassword;
 
     @Column(nullable = false, unique = true)
@@ -50,10 +47,11 @@ public class Guardian extends BaseEntity {
     private Institution institution;
 
     @Builder
-    public Guardian(String loginId, String loginPassword, String phone, String name, Institution institution) {
+    public Guardian(String loginPassword, String phone, String name, Institution institution) {
         this.phone = phone;
         this.name = name;
         this.institution = institution;
+        this.loginPassword = loginPassword;
         this.alertTime = LocalTime.of(18, 0); // 오후 6시로 초기화
     }
 
