@@ -28,7 +28,7 @@ public class GuardianService {
     @Transactional(readOnly = true)
     public GuardianResponse getGuardianById(Long guardianId) {
         Guardian guardian = findGuardianById(guardianId);
-        return new GuardianResponse(guardian.getPhone(), guardian.getName(), guardian.isActive());
+        return new GuardianResponse(guardianId, guardian.getPhone(), guardian.getName(), guardian.isActive());
     }
 
     public GuardianMyPageResponse getMyPageGuardianInfo(Long guardianId) {
@@ -57,7 +57,7 @@ public class GuardianService {
         Guardian guardian = findGuardianById(guardianId);
         guardian.updateGuardian(guardianRequest.phone(), guardianRequest.name());
         guardianRepository.save(guardian);
-        return new GuardianResponse(guardianRequest.phone(), guardianRequest.name(),
+        return new GuardianResponse(guardianId, guardianRequest.phone(), guardianRequest.name(),
             guardian.isActive());
     }
 
@@ -65,7 +65,7 @@ public class GuardianService {
     public List<GuardianResponse> getAllGuardian() {
         List<Guardian> guardianList = guardianRepository.findAll();
         return guardianList.stream()
-            .map(guardian -> new GuardianResponse(guardian.getPhone(), guardian.getName(),
+            .map(guardian -> new GuardianResponse(guardian.getId(), guardian.getPhone(), guardian.getName(),
                 guardian.isActive()))
             .toList();
     }
@@ -80,7 +80,7 @@ public class GuardianService {
             .loginPassword(password)
             .build();
         guardian = guardianRepository.save(guardian);
-        return new GuardianResponse(guardian.getPhone(), guardian.getName(), guardian.isActive());
+        return new GuardianResponse(guardian.getId(), guardian.getPhone(), guardian.getName(), guardian.isActive());
     }
 
     @Transactional

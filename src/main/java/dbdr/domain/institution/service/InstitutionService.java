@@ -28,7 +28,7 @@ public class InstitutionService {
 
     public InstitutionResponse getInstitutionResponseById(Long id) {
         Institution institution = getInstitutionById(id);
-        return new InstitutionResponse(institution.getInstitutionNumber(),
+        return new InstitutionResponse(id, institution.getInstitutionNumber(),
                 institution.getInstitutionName(), institution.getLoginId());
     }
 
@@ -42,14 +42,14 @@ public class InstitutionService {
                 password, institutionRequest.institutionNumber(),
                 institutionRequest.institutionName());
         institutionRepository.save(institution);
-        return new InstitutionResponse(institutionRequest.institutionNumber(),
+        return new InstitutionResponse(institutionId, institutionRequest.institutionNumber(),
                 institutionRequest.institutionName(), institutionRequest.institutionLoginId());
     }
 
     public List<InstitutionResponse> getAllInstitution() {
         List<Institution> institutionList = institutionRepository.findAll();
         return institutionList.stream().map(
-                institution -> new InstitutionResponse(institution.getInstitutionNumber(),
+                institution -> new InstitutionResponse(institution.getId(), institution.getInstitutionNumber(),
                         institution.getInstitutionName(), institution.getLoginId())).toList();
     }
 
@@ -62,7 +62,7 @@ public class InstitutionService {
                 .institutionNumber(institutionRequest.institutionNumber())
                 .institutionName(institutionRequest.institutionName()).build();
         institution = institutionRepository.save(institution);
-        return new InstitutionResponse(institution.getInstitutionNumber(),
+        return new InstitutionResponse(institution.getId(), institution.getInstitutionNumber(),
                 institution.getInstitutionName(), institution.getLoginId());
     }
 
