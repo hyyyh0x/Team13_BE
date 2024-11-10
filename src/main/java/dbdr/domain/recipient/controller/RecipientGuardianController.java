@@ -6,6 +6,7 @@ import dbdr.domain.recipient.service.RecipientService;
 import dbdr.global.util.api.ApiUtils;
 import dbdr.security.LoginGuardian;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class RecipientGuardianController {
     @Operation(summary = "보호자가 확인 가능한 모든 돌봄대상자 조회", security = @SecurityRequirement(name = "JWT"))
     @GetMapping
     public ResponseEntity<ApiUtils.ApiResult<List<RecipientResponse>>> getAllRecipients(
-            @LoginGuardian Guardian guardian) {
+            @Parameter(hidden = true) @LoginGuardian Guardian guardian) {
         List<RecipientResponse> recipients = recipientService.getAllRecipientsForGuardian(guardian.getId());
         return ResponseEntity.ok(ApiUtils.success(recipients));
     }
@@ -34,7 +35,7 @@ public class RecipientGuardianController {
     @GetMapping("/{recipientId}")
     public ResponseEntity<ApiUtils.ApiResult<RecipientResponse>> getRecipientById(
             @PathVariable("recipientId") Long recipientId,
-            @LoginGuardian Guardian guardian) {
+            @Parameter(hidden = true) @LoginGuardian Guardian guardian) {
         RecipientResponse recipient = recipientService.getRecipientForGuardian(guardian.getId(), recipientId);
         return ResponseEntity.ok(ApiUtils.success(recipient));
     }

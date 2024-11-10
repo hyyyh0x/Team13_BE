@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Pattern;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.EnumSet;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -46,7 +47,7 @@ public class Careworker extends BaseEntity {
     // 근무일을 요일로 설정
     @ElementCollection(fetch = FetchType.LAZY)
     @Enumerated(EnumType.STRING)
-    private Set<DayOfWeek> workingDays;
+    private Set<DayOfWeek> workingDays = EnumSet.noneOf(DayOfWeek.class);;
 
     @Column(nullable = true)
     private String lineUserId;

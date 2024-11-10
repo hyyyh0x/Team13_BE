@@ -42,8 +42,8 @@ public class GuardianController {
     @Operation(summary = "보호자 본인의 정보 수정", security = @SecurityRequirement(name = "JWT"))
     @PutMapping
     public ResponseEntity<ApiUtils.ApiResult<GuardianMyPageResponse>> updateGuardianInfo(
-        @Parameter(hidden = true) @Valid @RequestBody GuardianAlertTimeRequest guardianAlertTimeRequest,
-        @LoginGuardian Guardian guardian) {
+        @Valid @RequestBody GuardianAlertTimeRequest guardianAlertTimeRequest,
+        @Parameter(hidden = true) @LoginGuardian Guardian guardian) {
         GuardianMyPageResponse guardianMyPageResponse = guardianService.updateAlertTime(guardian.getId(),
             guardianAlertTimeRequest);
         return ResponseEntity.ok(ApiUtils.success(guardianMyPageResponse));

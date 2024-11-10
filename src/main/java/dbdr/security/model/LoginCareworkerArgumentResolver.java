@@ -23,7 +23,7 @@ public class LoginCareworkerArgumentResolver implements HandlerMethodArgumentRes
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.getParameterAnnotation(LoginCareworker.class) != null &&
-            UserDetails.class.isAssignableFrom(parameter.getParameterType());
+            LoginCareworker.class.isAssignableFrom(parameter.getParameterType());
     }
 
     @Override
