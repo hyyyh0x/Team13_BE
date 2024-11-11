@@ -1,5 +1,6 @@
 package dbdr.security.model;
 
+import dbdr.domain.careworker.entity.Careworker;
 import dbdr.domain.careworker.repository.CareworkerRepository;
 import dbdr.global.exception.ApplicationError;
 import dbdr.global.exception.ApplicationException;
@@ -7,7 +8,6 @@ import dbdr.security.LoginCareworker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -28,13 +28,13 @@ public class LoginCareworkerArgumentResolver implements HandlerMethodArgumentRes
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
         BaseUserDetails baseUserDetails = (BaseUserDetails) SecurityContextHolder.getContext()
-            .getAuthentication().getPrincipal();
+                .getAuthentication().getPrincipal();
         return careworkerRepository.findById(baseUserDetails.getId())
-            .orElseThrow(
-                () -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
+                .orElseThrow(
+                        () -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
 
     }
 }

@@ -7,6 +7,7 @@ import dbdr.domain.careworker.dto.response.CareworkerMyPageResponse;
 import dbdr.domain.careworker.dto.response.CareworkerResponse;
 import dbdr.domain.careworker.entity.Careworker;
 import dbdr.domain.careworker.repository.CareworkerRepository;
+import dbdr.domain.core.alarm.service.AlarmService;
 import dbdr.domain.institution.entity.Institution;
 import dbdr.domain.institution.service.InstitutionService;
 import dbdr.global.exception.ApplicationError;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -24,6 +26,7 @@ public class CareworkerService {
 
     private final CareworkerRepository careworkerRepository;
     private final InstitutionService institutionService;
+    private final AlarmService alarmService;
     private final CareworkerMapper careworkerMapper;
 
     @Transactional(readOnly = true)
@@ -73,6 +76,8 @@ public class CareworkerService {
         Careworker careworker = careworkerMapper.toEntity(careworkerRequestDTO);
 
         careworkerRepository.save(careworker);
+        alarmService.createCareworkerAlarm(careworker);
+
         return careworkerMapper.toResponse(careworker);
     }
 
@@ -176,8 +181,8 @@ public class CareworkerService {
         }
     }
 
-    public Careworker findByLineUserId(String userId) {
-        return careworkerRepository.findByLineUserId(userId).orElse(null);
+    public List<Careworker> findByAlertTime(LocalTime currentTime) {
+        return careworkerRepository.findByAlertTime(currentTime);
     }
 
     public Careworker findByPhone(String phoneNumber) {
@@ -189,8 +194,17 @@ public class CareworkerService {
                 careworker.getName(),
                 careworker.getPhone(),
                 careworker.getInstitution().getInstitutionName(),
-                careworker.getWorkingDays(),
-                careworker.getAlertTime()
+                careworker.getAlertTime(),
+                careworker.getWorkingDays()
         );
     }
+
+    @Transactional
+    public void updateLineUserId(String userId, String phoneNumber) {
+        Careworker careworker = findByPhone(phoneNumber);
+        careworker.updateLineUserId(userId);
+        careworkerRepository.save(careworker);
+    }
+
+
 }
