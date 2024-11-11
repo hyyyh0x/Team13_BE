@@ -67,6 +67,22 @@ dependencies {
 
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // SQS
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
+
+    // CoolSMS
+    implementation 'net.nurigo:sdk:4.3.0'
+
+    // AWS S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    // Naver Clova OCR API
+    implementation 'org.springframework.boot:spring-boot-starter-webflux' // WebClient 사용을 위한 라이브러리
+
+    // Health check
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {

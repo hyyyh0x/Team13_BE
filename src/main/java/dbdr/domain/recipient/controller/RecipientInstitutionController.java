@@ -37,7 +37,7 @@ public class RecipientInstitutionController {
     @GetMapping("/{recipientId}")
     public ResponseEntity<ApiUtils.ApiResult<RecipientResponse>> getRecipientById(
             @PathVariable("recipientId") Long recipientId,
-            @LoginInstitution Institution institution) {
+            @Parameter(hidden = true) @LoginInstitution Institution institution) {
         RecipientResponse recipient = recipientService.getRecipientByInstitution(recipientId, institution.getId());
         return ResponseEntity.ok(ApiUtils.success(recipient));
     }
