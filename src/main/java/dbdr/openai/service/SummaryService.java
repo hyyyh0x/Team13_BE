@@ -34,9 +34,9 @@ public class SummaryService {
 
     private SummaryResponse getSummarization(Long chartId) {
         Summary summary = summaryRepository.findByChartId(chartId);
-        return new SummaryResponse(summary.getCognitiveManagement(), summary.getBodyManagement(),
-            summary.getRecoveryTraining(), summary.getConditionDisease(),
-            summary.getNursingManagement());
+        return new SummaryResponse(summary.getConditionDisease(), summary.getBodyManagement(),
+            summary.getNursingManagement(), summary.getCognitiveManagement(),
+            summary.getRecoveryTraining());
     }
 
     private TagResponse getTag(Long chartId) {
