@@ -9,7 +9,6 @@ import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 
-
 @Service
 public class SmsMessagingService implements MessagingService {
 	private final DefaultMessageService defaultMessageService;
