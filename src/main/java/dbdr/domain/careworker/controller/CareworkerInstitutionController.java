@@ -1,6 +1,7 @@
 package dbdr.domain.careworker.controller;
 
 import dbdr.domain.careworker.dto.request.CareworkerRequest;
+import dbdr.domain.careworker.dto.request.CareworkerUpdateInstitutionRequest;
 import dbdr.domain.careworker.dto.response.CareworkerResponse;
 import dbdr.domain.careworker.service.CareworkerService;
 import dbdr.domain.institution.entity.Institution;
@@ -47,13 +48,13 @@ public class CareworkerInstitutionController {
         return ResponseEntity.ok(ApiUtils.success(careworker)) ;
     }
 
-    @DbdrAuth(targetRole = Role.INSTITUTION)
+    @DbdrAuth(targetRole = Role.INSTITUTION, authParam = AuthParam.LOGIN_INSTITUTION)
     @Operation(summary = "요양보호사 추가", security = @SecurityRequirement(name = "JWT"))
     @PostMapping
     public ResponseEntity<ApiUtils.ApiResult<CareworkerResponse>> createCareworker(
             @Parameter(hidden = true) @LoginInstitution Institution institution,
             @Valid @RequestBody CareworkerRequest careworkerDTO) {
-        CareworkerResponse newCareworker = careworkerService.createCareworker(careworkerDTO);
+        CareworkerResponse newCareworker = careworkerService.createCareworkerInstitution(careworkerDTO, institution.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiUtils.success(newCareworker));
 
     }
@@ -64,8 +65,8 @@ public class CareworkerInstitutionController {
     public ResponseEntity<ApiUtils.ApiResult<CareworkerResponse>> updateCareworker(
             @PathVariable Long careworkerId,
             @Parameter(hidden = true) @LoginInstitution Institution institution,
-            @RequestBody CareworkerRequest careworkerDTO) {
-        CareworkerResponse updatedCareworker = careworkerService.updateCareworker(careworkerId, careworkerDTO);
+            @RequestBody CareworkerUpdateInstitutionRequest careworkerDTO) {
+        CareworkerResponse updatedCareworker = careworkerService.updateCareworkerByInstitution(careworkerId, careworkerDTO);
         return ResponseEntity.ok(ApiUtils.success(updatedCareworker));
     }
 

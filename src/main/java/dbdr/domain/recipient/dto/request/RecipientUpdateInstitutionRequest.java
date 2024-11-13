@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecipientRequest {
+public class RecipientUpdateInstitutionRequest {
 
     @Schema(description = "돌봄대상자 이름", example = "이순자")
     @NotBlank(message = "이름은 필수 항목입니다.")
@@ -32,7 +32,7 @@ public class RecipientRequest {
     @NotBlank(message = "장기요양등급은 필수 항목입니다.")
     private String careLevel;
 
-    @Schema(description = "장기요양번호", example = "L0000000000-300")
+    @Schema(description = "장기요양번호", example = "123400000")
     @NotBlank(message = "장기요양번호는 필수 항목입니다.")
     @Pattern(regexp = "^[A-Z0-9-]+$", message = "올바르지 않은 형식입니다.")
     private String careNumber;
@@ -41,18 +41,6 @@ public class RecipientRequest {
     @NotNull(message = "입소일은 필수 항목입니다.")
     private LocalDate startDate;
 
-    @Schema(description = "돌봄대상자가 속해있는 요양기관 이름", example = "돌봄사랑케어센터")
-    @NotBlank(message = "요양기관이름은 필수 항목입니다.")
-    private String institution;
-
-    @Schema(description = "돌봄대상자가 속해있는 요양기관 번호", example = "777999")
-    @NotNull(message = "요양기관번호는 필수 항목입니다.")
-    private Long institutionNumber;
-
-    @Schema(description = "돌봄대상자가 속해있는 요양원 아이디", example = "11")
-    @NotNull(message = "요양기관 ID는 필수 항목입니다.")
-    private Long institutionId;
-
     @Schema(description = "돌봄대상자의 요양보호사 아이디", example = "8")
     @NotNull(message = "요양보호사 ID는 필수 항목입니다.")
     private Long careworkerId;
@@ -60,4 +48,6 @@ public class RecipientRequest {
     @Schema(description = "돌봄대상자의 보호자 아이디", example = "11")
     @NotNull(message = "보호자 ID는 필수 항목입니다.")
     private Long guardianId;
+
+
 }
