@@ -9,10 +9,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+// 관리자 요청 DTO
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CareworkerRequest {
+
+public class CareworkerUpdateAdminRequest {
 
     @Schema(description = "요양기관아이디", example = "11")
     @NotNull(message = "요양기관 아이디는 필수 항목입니다.")
@@ -22,18 +24,15 @@ public class CareworkerRequest {
     @NotBlank(message = "이름은 필수 항목입니다.")
     private String name;
 
-    @Schema(description = "요양보호사 이메일", example = "carecare1@email.com")
+    @Schema(description = "요양보호사 이메일", example = "carecare20@email.com")
     @NotBlank(message = "이메일은 필수 항목입니다.")
     @Email(message = "올바르지 않은 형식입니다.")
     private String email;
 
-    @Schema(description = "요양보호사 휴대폰 번호", example = "01012349999")
+    @Schema(description = "요양보호사 휴대폰 번호", example = "01057573333")
     @NotBlank(message = "휴대폰 번호는 필수 항목입니다.")
     @Pattern(regexp = "010\\d{8}", message = "010XXXXXXXX형식으로 입력해주세요.")
     private String phone;
 
-    @Schema(description = "요양보호사 비밀번호", example = "1234")
-    @NotBlank(message = "비밀번호는 필수 항목입니다.")
-    private String loginPassword;
-
+    // 비밀번호는 수정 불가
 }

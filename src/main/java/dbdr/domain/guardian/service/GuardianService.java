@@ -1,7 +1,8 @@
 package dbdr.domain.guardian.service;
 
 import dbdr.domain.core.alarm.service.AlarmService;
-import dbdr.domain.guardian.dto.request.GuardianAlertTimeRequest;
+import dbdr.domain.guardian.dto.request.GuardianMyPageRequest;
+import dbdr.domain.guardian.dto.request.GuardianUpdateRequest;
 import dbdr.domain.guardian.dto.response.GuardianMyPageResponse;
 import dbdr.domain.guardian.entity.Guardian;
 import dbdr.domain.guardian.dto.request.GuardianRequest;
@@ -26,7 +27,6 @@ public class GuardianService {
 
     private final GuardianRepository guardianRepository;
     private final InstitutionRepository institutionRepository;
-    private final AlarmService alarmService;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -35,29 +35,28 @@ public class GuardianService {
     public GuardianResponse getGuardianById(Long guardianId) {
         Guardian guardian = findGuardianById(guardianId);
         return new GuardianResponse(guardianId, guardian.getPhone(), guardian.getName(),
-            guardian.isActive());
+            guardian.getInstitution().getId(), guardian.isActive());
     }
 
     public GuardianMyPageResponse getMyPageGuardianInfo(Long guardianId) {
         Guardian guardian = findGuardianById(guardianId);
-        return new GuardianMyPageResponse(guardian.getName(), guardian.getPhone(),
-            guardian.getAlertTime());
+        return new GuardianMyPageResponse(guardian.getName(), guardian.getPhone(), guardian.getAlertTime(), guardian.isSmsSubscription(), guardian.isLineSubscription());
     }
 
-    public GuardianMyPageResponse updateAlertTime(Long guardianId,
-        GuardianAlertTimeRequest request) {
-        ensureUniquePhoneButNotId(request.phone(), guardianId);
+    @Transactional
+    public GuardianMyPageResponse updateMyPageInfo(Long guardianId, GuardianMyPageRequest request) {
         Guardian guardian = findGuardianById(guardianId);
-        guardian.updateAlertTime(request.name(), request.phone(), request.alertTime());
+        guardian.updateAlertTime(request.alertTime());
+        guardian.updateSubscriptions(request.smsSubscription(), request.lineSubscription());
         guardianRepository.save(guardian);
         return new GuardianMyPageResponse(guardian.getName(), guardian.getPhone(),
-            guardian.getAlertTime());
+            guardian.getAlertTime(), guardian.isSmsSubscription(), guardian.isLineSubscription());
     }
 
     @Transactional
     public GuardianResponse updateGuardianById(
         Long guardianId,
-        GuardianRequest guardianRequest
+        GuardianUpdateRequest guardianRequest
     ) {
         ensureUniquePhoneButNotId(guardianRequest.phone(), guardianId);
 
@@ -65,6 +64,7 @@ public class GuardianService {
         guardian.updateGuardian(guardianRequest.phone(), guardianRequest.name());
         guardianRepository.save(guardian);
         return new GuardianResponse(guardianId, guardianRequest.phone(), guardianRequest.name(),
+            guardian.getInstitution().getId(),
             guardian.isActive());
     }
 
@@ -74,6 +74,18 @@ public class GuardianService {
         return guardianList.stream()
             .map(guardian -> new GuardianResponse(guardian.getId(), guardian.getPhone(),
                 guardian.getName(),
+                guardian.getInstitution().getId(),
+                guardian.isActive()))
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<GuardianResponse> getAllGuardianByInstitutionId(Long institutionId) {
+        List<Guardian> guardianList = guardianRepository.findAllByInstitutionId(institutionId);
+        return guardianList.stream()
+            .map(guardian -> new GuardianResponse(guardian.getId(), guardian.getPhone(),
+                guardian.getName(),
+                guardian.getInstitution().getId(),
                 guardian.isActive()))
             .toList();
     }
@@ -92,8 +104,45 @@ public class GuardianService {
             .institution(institution)
             .build();
         guardian = guardianRepository.save(guardian);
+        return new GuardianResponse(guardian.getId(), guardian.getPhone(), guardian.getName(),
+            guardian.getInstitution().getId(), guardian.isActive());
+    }
+
+    @Transactional
+    public GuardianResponse addGuardianByInstitution(GuardianRequest guardianRequest, Long institutionId) {
+        ensureUniquePhone(guardianRequest.phone());
+        Institution institution = institutionRepository.findById(institutionId)
+            .orElseThrow(() -> new ApplicationException(
+                ApplicationError.INSTITUTION_NOT_FOUND));
+        String password = passwordEncoder.encode(guardianRequest.loginPassword());
+        Guardian guardian = Guardian.builder().phone(guardianRequest.phone())
+            .name(guardianRequest.name())
+            .phone(guardianRequest.phone())
+            .loginPassword(password)
+            .institution(institution)
+            .build();
+        guardian = guardianRepository.save(guardian);
+        return new GuardianResponse(guardian.getId(), guardian.getPhone(), guardian.getName(),
+            guardian.getInstitution().getId(), guardian.isActive());
+    }
+
+    @Transactional
+    public GuardianResponse addGuardianByInstitution(GuardianRequest guardianRequest, Long institutionId) {
+        ensureUniquePhone(guardianRequest.phone());
+        Institution institution = institutionRepository.findById(institutionId)
+            .orElseThrow(() -> new ApplicationException(
+                ApplicationError.INSTITUTION_NOT_FOUND));
+        String password = passwordEncoder.encode(guardianRequest.loginPassword());
+        Guardian guardian = Guardian.builder().phone(guardianRequest.phone())
+            .name(guardianRequest.name())
+            .phone(guardianRequest.phone())
+            .loginPassword(password)
+            .institution(institution)
+            .build();
+        guardian = guardianRepository.save(guardian);
         alarmService.createGuardianAlarm(guardian);
-        return new GuardianResponse(guardian.getId(), guardian.getPhone(), guardian.getName(), guardian.isActive());
+        return new GuardianResponse(guardian.getId(), guardian.getPhone(), guardian.getName(),
+            guardian.getInstitution().getId(), guardian.isActive());
     }
 
     @Transactional
@@ -103,7 +152,7 @@ public class GuardianService {
         guardianRepository.delete(guardian);
     }
 
-    private Guardian findGuardianById(Long guardianId) {
+    public Guardian findGuardianById(Long guardianId) {
         return guardianRepository.findById(guardianId)
             .orElseThrow(() -> new ApplicationException(ApplicationError.GUARDIAN_NOT_FOUND));
     }
