@@ -1,6 +1,5 @@
 package dbdr.domain.guardian.service;
 
-import dbdr.domain.core.alarm.service.AlarmService;
 import dbdr.domain.guardian.dto.request.GuardianMyPageRequest;
 import dbdr.domain.guardian.dto.request.GuardianUpdateRequest;
 import dbdr.domain.guardian.dto.response.GuardianMyPageResponse;
@@ -46,7 +45,9 @@ public class GuardianService {
     @Transactional
     public GuardianMyPageResponse updateMyPageInfo(Long guardianId, GuardianMyPageRequest request) {
         Guardian guardian = findGuardianById(guardianId);
-        guardian.updateAlertTime(request.alertTime());
+        if (request.alertTime() != null) {
+            guardian.updateAlertTime(request.alertTime());
+        }
         guardian.updateSubscriptions(request.smsSubscription(), request.lineSubscription());
         guardianRepository.save(guardian);
         return new GuardianMyPageResponse(guardian.getName(), guardian.getPhone(),
@@ -127,25 +128,6 @@ public class GuardianService {
     }
 
     @Transactional
-    public GuardianResponse addGuardianByInstitution(GuardianRequest guardianRequest, Long institutionId) {
-        ensureUniquePhone(guardianRequest.phone());
-        Institution institution = institutionRepository.findById(institutionId)
-            .orElseThrow(() -> new ApplicationException(
-                ApplicationError.INSTITUTION_NOT_FOUND));
-        String password = passwordEncoder.encode(guardianRequest.loginPassword());
-        Guardian guardian = Guardian.builder().phone(guardianRequest.phone())
-            .name(guardianRequest.name())
-            .phone(guardianRequest.phone())
-            .loginPassword(password)
-            .institution(institution)
-            .build();
-        guardian = guardianRepository.save(guardian);
-        alarmService.createGuardianAlarm(guardian);
-        return new GuardianResponse(guardian.getId(), guardian.getPhone(), guardian.getName(),
-            guardian.getInstitution().getId(), guardian.isActive());
-    }
-
-    @Transactional
     public void deleteGuardianById(Long guardianId) {
         Guardian guardian = findGuardianById(guardianId);
         guardian.deactivate();
@@ -186,7 +168,7 @@ public class GuardianService {
         guardianRepository.save(guardian);
     }
 
-	public List<Guardian> findByAlertTime(LocalTime currentTime) {
+    public List<Guardian> findByAlertTime(LocalTime currentTime) {
         return guardianRepository.findByAlertTime(currentTime);
-	}
+    }
 }
