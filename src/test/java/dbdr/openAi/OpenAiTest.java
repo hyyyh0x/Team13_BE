@@ -53,38 +53,32 @@ public class OpenAiTest {
         String tempModel = "test-model";
         String expectedContent = "Test summary response";
 
-        // Mock headers
         HttpHeaders headers = new HttpHeaders();
         when(summarizationConfig.httpHeaders()).thenReturn(headers);
 
-        // Create a mock message and choice
         Message message = new Message("user", expectedContent);
         Choice choice = new Choice(0, message, null, "stop");
 
-        // Create a mock usage and OpenAiSummaryResponse
         CompletionTokensDetails completionTokensDetails = new CompletionTokensDetails(5);
         Usage usage = new Usage(10, 10, 20, completionTokensDetails);
         OpenAiSummaryResponse mockResponse = new OpenAiSummaryResponse(
             "id", "object", System.currentTimeMillis(), "model", "fingerprint", List.of(choice), usage
         );
 
-        // Mock the response entity
         ResponseEntity<OpenAiSummaryResponse> responseEntity = new ResponseEntity<>(mockResponse, HttpStatus.OK);
 
-        // Configure restTemplate.exchange to return the mocked response entity
         when(restTemplate.exchange(
-            eq(chatUrl),                       // Ensure this matches your actual URL
+            eq(chatUrl),
             eq(HttpMethod.POST),
             any(HttpEntity.class),
             eq(OpenAiSummaryResponse.class)
         )).thenReturn(responseEntity);
 
-        // Execute the method and verify
         OpenAiSummaryResponse result = chartService.openAiResponse(testInput, tempModel);
 
         assertNotNull(result);
         assertEquals(expectedContent, result.choices().get(0).message().content());
-        assertEquals("user", result.choices().get(0).message().role()); // Verifying the role as well
+        assertEquals("user", result.choices().get(0).message().role());
         assertEquals("stop", result.choices().get(0).finishReason());
     }
 
