@@ -13,13 +13,15 @@ import java.lang.reflect.Field;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class CareworkerMapperTest {
 
-    private CareworkerMapper mapper;
+    @InjectMocks
+    private CareworkerMapper mapper = Mappers.getMapper(CareworkerMapper.class);
 
     @Mock
     private InstitutionService institutionService;
@@ -33,12 +35,6 @@ public class CareworkerMapperTest {
     void setUp() throws NoSuchFieldException, IllegalAccessException {
 
         MockitoAnnotations.openMocks(this);
-
-        mapper = Mappers.getMapper(CareworkerMapper.class);
-
-        Field institutionServiceField = CareworkerMapper.class.getDeclaredField("institutionService");
-        institutionServiceField.setAccessible(true);
-        institutionServiceField.set(mapper, institutionService);
 
         Field passwordEncoderField = CareworkerMapper.class.getDeclaredField("passwordEncoder");
         passwordEncoderField.setAccessible(true);
